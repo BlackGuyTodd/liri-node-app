@@ -4,21 +4,73 @@ var axios = require("axios");
 var dotenv = require('dotenv').config();
 var keys = require("./keys.js");
 var spotify = require('node-spotify-api');
+var inquirer = require("inquirer");
+// var spotify = new Spotify(keys.spotify);
 
-var userRequest = process.argv[2];
-var userRequest2 = process.argv[3];
 
-for (var i = 2; i < process.argv.length; i++) {
-    userRequest += + process.argv[i];
-}
+inquirer
+    .prompt({
+        name: "searchType",
+        type: "list",
+        message: " Hello! I'm Liri, your personal Node.js Assistant. What you like to do?",
+        choices: ["Search for a Concert", "Spotify a Song", "Search for Movie Info", "Or Do what it says..."]
+    }).then(function (answer) {
+        if (answer.searchType === "Search for a Concert") {
+            searchConcert();
+        } else if (answer.searchType === "Spotify a Song") {
+            spotifySong();
+        } else if (answer.searchType === "Search for Movie Info") {
+            searchMovie();
+        } else if (answer.searchType === "Or Do what it says...") {
+            doWhatItSays();
+        }
+    });
 
-var getArtist = function(songName) {
-    if (songName === undefined) {
-        songName = "Bye Bye Bye";
-    }
+function spotifySong() {
+    inquirer
+        .prompt({
+            name: "songSearch",
+            type: "input",
+            message: "Which song would you like to search for?"
+        }).then(function (songAnswer) {
+            spotify.search({ type: 'track', query: songAnswer.songSearch }, function (err, data) {
+                if (err) {
+                    return console.log('Error occurred: ' + err);
+                }
+                console.log(data);
+            });
+        })
+};
 
-    spotify.search({
-        type: "track",
-        request: userRequest
-    })
-}
+
+function searchMovie() {
+    inquirer
+        .prompt({
+            name: "movieSearch",
+            type: "input",
+            message: "Which movie would you like info on?"
+        }).then(function (movieAnswer) {
+            axios.get("http://www.omdbapi.com/?t=" + movieAnswer.movieSearch + "&y=&plot=short&apikey=trilogy")
+        }).then(function (response) {
+            console.log(movieAnswer.movieSearch);
+            // console.log(response);
+        })
+};
+
+
+function searchConcert() {
+    inquirer
+        .prompt({
+            name: "concertSearch",
+            type: "input",
+            message: "Which concert(Artist) would you like to search for?"
+        }).then(function (concertAnswer) {
+            axios.get("https://rest.bandsintown.com/artists/" + concertAnswer + "/events?app_id=codingbootcamp")
+        }).then(function (response) {
+            console.log(response);
+        })
+};
+
+function doWhatItSays() {
+
+};
