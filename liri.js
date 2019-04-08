@@ -50,10 +50,10 @@ function searchMovie() {
             type: "input",
             message: "Which movie would you like info on?"
         }).then(function (movieAnswer) {
-            axios.get("http://www.omdbapi.com/?t=" + movieAnswer.movieSearch + "&y=&plot=short&apikey=trilogy")
+            axios.get("http://www.omdbapi.com/?t=" + movieAnswer.movieSearch + "&y=&plot=full&tomatoes=true&apikey=trilogy")
         }).then(function (response) {
-            console.log(movieAnswer.movieSearch);
-            // console.log(response);
+            // console.log(movieAnswer.movieSearch);
+            console.log(response);
         })
 };
 
@@ -72,5 +72,10 @@ function searchConcert() {
 };
 
 function doWhatItSays() {
+    fs.readFile("random.txt", "uft8", function(err, data) {
+        var dataArr = data.split(",");
 
+        
+        
+    });
 };
