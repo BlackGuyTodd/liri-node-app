@@ -3,9 +3,10 @@
 var axios = require("axios");
 var dotenv = require('dotenv').config();
 var keys = require("./keys.js");
-var spotify = require('node-spotify-api');
+var Spotify = require('node-spotify-api');
 var inquirer = require("inquirer");
-// var spotify = new Spotify(keys.spotify);
+var spotify = new Spotify(keys.spotify);
+var fs = require("fs");
 
 
 inquirer
@@ -37,7 +38,12 @@ function spotifySong() {
                 if (err) {
                     return console.log('Error occurred: ' + err);
                 }
-                console.log(data);
+                // console.log(data);
+                var songs = data.tracks.items;
+
+                for (var i = 0; i < songs.length; i++) {
+                    
+                }
             });
         })
 };
@@ -50,10 +56,23 @@ function searchMovie() {
             type: "input",
             message: "Which movie would you like info on?"
         }).then(function (movieAnswer) {
-            axios.get("http://www.omdbapi.com/?t=" + movieAnswer.movieSearch + "&y=&plot=full&tomatoes=true&apikey=trilogy")
-        }).then(function (response) {
-            // console.log(movieAnswer.movieSearch);
-            console.log(response);
+            axios.get("http://www.omdbapi.com/?t=" + movieAnswer.movieSearch + "&y=&plot=full&tomatoes=true&apikey=trilogy").then(function (response) {
+                // console.log(response.data); 
+                var movieInfo = response.data;
+
+                console.log("Title: " + movieInfo.Title);
+                console.log("Year: " + movieInfo.Year);
+                console.log("Rated: " + movieInfo.Rated);
+                console.log("IMDB Rating: " + movieInfo.imdbRating);
+                console.log("Country: " + movieInfo.Country);
+                console.log("Language: " + movieInfo.Language);
+                console.log("Plot: " + movieInfo.Plot);
+                console.log("Actors: " + movieInfo.Actors);
+                console.log("Rotten Tomatoes Rating: " + movieInfo.Ratings[1].Value);
+
+            });
+
+
         })
 };
 
@@ -72,10 +91,10 @@ function searchConcert() {
 };
 
 function doWhatItSays() {
-    fs.readFile("random.txt", "uft8", function(err, data) {
+    fs.readFile("random.txt", "uft8", function (err, data) {
         var dataArr = data.split(",");
 
-        
-        
+
+
     });
 };
